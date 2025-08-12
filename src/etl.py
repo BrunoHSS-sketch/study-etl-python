@@ -19,8 +19,8 @@ logger.add(
     level="INFO",
 )
 
-df = pl.read_excel(excel_in)
-df3 = pl.read_excel(excel_in2)
+df = pl.read_excel(excel_in)    if excel_in else pl.DataFrame()
+df3 = pl.read_excel(excel_in2)  if excel_in2 else pl.DataFrame()
 
 def locale_file():
     logger.info(f"File located at {excel_in}")
@@ -28,15 +28,18 @@ def locale_file():
     logger.info(f"df3 cols: {df3.columns}")
     logger.success(f"File found with {len(df)} rows and {len(df.columns)} columns")
     return_type()
-    df2 = transform(df)
+    df2 = transform(df, df3)
     generate_xls(df2, excel_out)
 
 def return_type():
     schema = df.schema
+    schema2 = df3.schema
     print(schema)
+    print(schema2)
     logger.info(f"Type of file is {schema}")
+    logger.info(f"Type of file is {schema2}")
 
-def transform(input_df: pl.DataFrame) -> pl.DataFrame:
+def transform(input_df: pl.DataFrame, df3: pl.DataFrame) -> pl.DataFrame:
     logger.info("Transforming rows")
     df2 = (
         input_df
